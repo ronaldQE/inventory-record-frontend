@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 
+import service from '../../service/employee.service';
 
 const style = {
   position: 'absolute',
@@ -23,6 +24,10 @@ const styleTextFile = {
   with:'40%',
 }
 export default function ModalRegisterForm({ data, open, handleClose }) {
+
+  const register = () =>{
+    service.saveEmployee({cedula:"45454545", name:"Ronald", lastName:"Quispe", email:"roro@gmail.com"});
+  }
 
   return (
     <div>
@@ -75,7 +80,7 @@ export default function ModalRegisterForm({ data, open, handleClose }) {
             />
             <br />
 
-            <Button variant="contained">Registrar</Button>
+            <Button variant="contained" onClick={register}>Registrar</Button>
           </Box>
         </Box>
       </Modal>
