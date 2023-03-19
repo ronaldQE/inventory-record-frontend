@@ -14,16 +14,16 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from 'react-router-dom';
 
-const pages = [
-    {
-        title: 'Inicio',
-        path: 'login'
-    },
+// const pages = [
+//     {
+//         title: 'Inicio',
+//         path: 'login'
+//     },
 
-    ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+// ];
+const settings = ['Logout'];
 
-function Navbar() {
+function Navbar({ role, setRole }) {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const navigate = useNavigate();
@@ -42,7 +42,14 @@ function Navbar() {
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+        
     };
+
+    const logauot =()=>{
+        setRole("");
+        handleCloseUserMenu();
+        window.location.href = "/"
+    }
 
     return (
         <AppBar position="static">
@@ -78,30 +85,7 @@ function Navbar() {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={()=>handleCloseNavMenu('/')}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page.title} onClick={()=>handleCloseNavMenu(page.path)}>
-                                    <Typography textAlign="center">{page.title}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
+                        
                     </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                     <Typography
@@ -122,47 +106,54 @@ function Navbar() {
                     >
                         LOGO
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page.title}
-                                onClick={()=>handleCloseNavMenu(page.path)}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page.title}
-                            </Button>
-                        ))}
-                    </Box>
 
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                     </Box>
+                        
+                        {role != "" ?
+                            <Box sx={{ flexGrow: 0 }}>
+                                
+                                <Tooltip title="Open settings">
+                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    </IconButton>
+
+                                </Tooltip>
+                                <Menu
+                                    sx={{ mt: '45px' }}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                        <MenuItem onClick={logauot}>
+                                            <Typography textAlign="center">Salir</Typography>
+                                        </MenuItem>
+                                </Menu>
+
+                                <Typography
+                                    variant="h6"
+                                    component="h6"
+                                    sx={{
+                                        color: 'inherit',
+                                        fontSize: 'small',
+                                    }}
+                                >
+                                    {role}
+                                </Typography>
+
+                            </Box>
+                            : null}
+
                 </Toolbar>
             </Container>
         </AppBar>

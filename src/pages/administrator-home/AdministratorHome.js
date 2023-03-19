@@ -47,6 +47,7 @@ const AdministratorHome = () => {
           <Button variant="contained" onClick={handleOpen}>Nuevo</Button>
         </Grid>
       </Grid>
+      <br></br>
       <TableAdmin rows ={employeeList} getList={getList}/>
       <ModalRegisterForm handleClose={handleClose} open={open} isNew={true} />
 
