@@ -6,12 +6,12 @@ import {getFirestore} from 'firebase/firestore'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBIooLfFhGCJ9s7-9POphPuZhbNDOMHsJY",
-  authDomain: "db-employee-vaccination.firebaseapp.com",
-  projectId: "db-employee-vaccination",
-  storageBucket: "db-employee-vaccination.appspot.com",
-  messagingSenderId: "135852661669",
-  appId: "1:135852661669:web:8dd23e0443c2ef491be64c"
+  apiKey: "AIzaSyCGs9L8vRCJTyUNalhpfpuI1wZsV0I5BNs",
+  authDomain: "db-prueba-83cb0.firebaseapp.com",
+  projectId: "db-prueba-83cb0",
+  storageBucket: "db-prueba-83cb0.appspot.com",
+  messagingSenderId: "1048473587548",
+  appId: "1:1048473587548:web:6d865e37e229c7f327bb99"
 };
 
 // Initialize Firebase

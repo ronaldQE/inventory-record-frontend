@@ -22,7 +22,7 @@ const SelectFilter = ({dataSelect, title}) => {
                 >
                     {
                         dataSelect.map((select, index) => (
-                            <MenuItem value={index}>{select}</MenuItem>
+                            <MenuItem key={index} value={index}>{select}</MenuItem>
                         )
                         )
                     }

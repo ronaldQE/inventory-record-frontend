@@ -1,49 +1,54 @@
 import { useState } from "react";
 import service from '../service/employee.service';
 import { toast } from 'react-toastify';
+//import { serverTimestamp } from "firebase/firestore";
 
 
-export const useForm = (initialForm, validateForm, handleClose)=>{
-    const [form,setForm] = useState(initialForm);
-    const [errors,setErrors] = useState({});
-    const [loading,setLoading] = useState(false);
+export const useForm = (initialForm, validateForm, handleClose) => {
+    const [form, setForm] = useState(initialForm);
+    const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
     const [response, setResponse] = useState(null);
-    
-    
-    const cleanForm = () =>{
+
+
+    const cleanForm = () => {
         setForm(initialForm);
     }
-    const handleChange=(e)=>{
-        const {name,value}= e.target;
+    const handleChange = (e) => {
+        const { name, value } = e.target;
         setForm({
             ...form,
-            [name]:value
+            [name]: value
         });
     };
-    
-    const handleBlur=(e)=>{
+
+    const handleBlur = (e) => {
         handleChange(e);
         setErrors(validateForm(form));
     };
-    const handleSubmit=(e)=>{
-        e.preventDefault();
-        setErrors(validateForm(form));
-        if(Object.keys(errors).length === 0){
-            service.saveEmployee(form).then((res)=>{
-                toast.success("Registro exitoso");
-                setLoading(false);
-                setResponse(true);
-                cleanForm();
-                handleClose();
+    const handleSubmit = async (e) => {
+            e.preventDefault();
+            // setErrors(validateForm(form));
+    
+            // if (Object.keys(errors).length === 0) {
+            //     const save = await service.saveEmployee(form)
+            //     if (save) {
+            //         toast.success("Registro exitoso");
+            //         setLoading(false);
+            //         setResponse(true);
+            //         cleanForm();
+            //         handleClose();
+            //         //getList();
+            //     }
+    
+            // } else {
+            //     toast.error("Registe el formulario correctamente");
+            //     setResponse(false);
+            // }
 
-            }); 
-        }else{
-            toast.error("Registe el formulario correctamente");
-            setResponse(false);
-        }
     };
 
-    return{
+    return {
         form,
         errors,
         loading,
@@ -52,6 +57,7 @@ export const useForm = (initialForm, validateForm, handleClose)=>{
         handleBlur,
         handleSubmit,
         cleanForm,
+        setErrors
     }
 
 

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React,{useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -21,6 +21,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 //import Grid from '@mui/material/Grid';
 //import Box from '@mui/material/Box';
+import service from '../../service/employee.service';
+import ModalInfo from '../modals/ModalInfo';
+import ModalRegisterForm from '../modals/ModalRegisterForm';
+
 
 
 
@@ -85,28 +89,44 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function createData(ci, name, lastname, email) {
-  return { ci, name, lastname, email };
-}
 
-const rows = [
-  createData('5620369','Alfredo','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('5620144','Cesar Pedro','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('5620036922','Bruno','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('562036958','Carlos','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('56203696','Jorge','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('56203696','Faviana','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('56203692','Alejandra','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('56203699','Marco','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('562036988','Liz','Montes Miranda', 'alfredo.mm@gmail.com'),
-  createData('562036119','Federico Hugo','Montes Miranda', 'alfredo.mm@gmail.com'),
-  
-].sort((a, b) => (a.calories < b.calories ? -1 : 1));
+const TableAdmin = ({ rows, getList }) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [data, setData] = useState(null);
+  const [idData, setIdData] = useState(0);
 
-export default function TableAdmin() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(7);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
+  const [openForm, setOpenForm] = useState(false);
+  const handleOpenForm = () => setOpenForm(true);
+  const handleCloseForm = () => setOpenForm(false);
+    
+  useEffect(()=>{
+    getList();
+
+  },[rows])
+
+
+  const updateEmployee = async (id) => {
+    setIdData(id);
+    const dataSelect = await service.getEmployee(id);
+    setData(dataSelect);
+    handleOpenForm();
+
+  }
+
+  const deleteEmployee = async (id) => {
+    //confirmar Eminacion
+    await service.deleteEmployee(id);
+  }
+  const showEmployee = async (id) => {
+    const dataSelect = await service.getEmployee(id);
+    setData(dataSelect);
+    handleOpen();
+  }
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -143,6 +163,7 @@ export default function TableAdmin() {
 
   ]
   return (
+    <div>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
         <TableHead>
@@ -151,7 +172,7 @@ export default function TableAdmin() {
               <TableCell
                 key={index}
                 align={column.align}
-                style={{ fontWeight: "bold"}}
+                style={{ fontWeight: "bold" }}
               >
                 {column.title}
               </TableCell>
@@ -163,8 +184,8 @@ export default function TableAdmin() {
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
           ).map((row) => (
-            <TableRow key={row.ci}>
-              <TableCell  style={{ width: 160 }} component="th" scope="row">
+            <TableRow key={row.id}>
+              <TableCell style={{ width: 160 }} component="th" scope="row">
                 {row.ci}
               </TableCell>
               <TableCell style={{ width: 160 }} align="leght">
@@ -176,11 +197,18 @@ export default function TableAdmin() {
               <TableCell style={{ width: 160 }} align="leght">
                 {row.email}
               </TableCell>
-              
-              <TableCell style={{ width: 160}} align="center">
-                    <InfoIcon color='primary' sx={{marginInline:0.5}} />
-                    <EditIcon sx={{marginInline:0.5}}/>
-                    <DeleteIcon color='secondary' sx={{marginInline:0.5}} />
+
+              <TableCell style={{ width: 160 }} align="center">
+
+                <IconButton color='primary' onClick={() => showEmployee(row.id)}>
+                  <InfoIcon color='primary' sx={{ marginInline: 0.5 }} />
+                </IconButton>
+                <IconButton color='darck' onClick={() => updateEmployee(row.id)}>
+                  <EditIcon sx={{ marginInline: 0.5 }} />
+                </IconButton>
+                <IconButton color='primary' onClick={() => deleteEmployee(row.id)}>
+                  <DeleteIcon color='secondary' sx={{ marginInline: 0.5 }} />
+                </IconButton>
 
               </TableCell>
             </TableRow>
@@ -188,7 +216,7 @@ export default function TableAdmin() {
 
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={7} />
+              <TableCell colSpan={6} />
             </TableRow>
           )}
         </TableBody>
@@ -214,5 +242,12 @@ export default function TableAdmin() {
         </TableFooter>
       </Table>
     </TableContainer>
+    {data != null ? < ModalInfo handleClose={handleClose} open={open} data={data}/> : null}
+    
+    {data != null ? <ModalRegisterForm handleClose={handleCloseForm} open={openForm} idData={idData} data={data} isNew={false}/> : null}
+    </div>
+
   );
 }
+
+export default TableAdmin;

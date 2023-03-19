@@ -1,16 +1,15 @@
-import React, {useEffect, useState}from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
-import LoadingButton from '@mui/lab/LoadingButton';
-import SaveIcon from '@mui/icons-material/Save';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 import { useForm } from '../../hooks/useForm';
+import service from '../../service/employee.service';
 
 const style = {
   position: 'absolute',
@@ -48,7 +47,6 @@ const validationsForm = (form) => {
   let regexNum = /^[0-9]+$/;
   let regexCantNum = /^.{10}$/;
   let regexEmail = /^(\w+[/./-]?){1,}@[a-z]+[/.]\w{2,}$/;
-  //let regexComments = /^.{1,255}$/;
 
   if (!form.ci.trim()) {
     errors.ci = "El campo 'Cédula' es requerido"
@@ -80,22 +78,46 @@ const validationsForm = (form) => {
   return errors
 };
 
-export default function ModalRegisterForm({ data, open, handleClose }) {
-  
-
+export default function ModalRegisterForm({ data, idData, open, handleClose, isNew }) {
   const {
     form,
     errors,
-    loading,
     handleChange,
     handleBlur,
-    handleSubmit,
     cleanForm,
-  } = useForm(initialForm, validationsForm, handleClose);
+    setErrors,
+  } = useForm(isNew ? initialForm : data, validationsForm, handleClose);
 
-  const modalClose =()=>{
+  const modalClose = () => {
     handleClose()
     cleanForm();
+  }
+
+  const updateEmployee = async () => {
+    console.log(idData, form)
+    await service.updateEmployee(idData, form)
+    toast.success("Actulización con exito");
+    handleClose()
+
+  }
+
+  const registerEmployee = async () => {
+    setErrors(validationsForm(form));
+
+    if (Object.keys(errors).length === 0) {
+      const save = await service.saveEmployee(form)
+      if (save) {
+        toast.success("Registro exitoso");
+        //setLoading(false);
+        //setResponse(true);
+        cleanForm();
+        handleClose();
+      }
+
+    } else {
+      toast.error("Registe el formulario correctamente");
+      //setResponse(false);
+    }
   }
 
   return (
@@ -110,9 +132,9 @@ export default function ModalRegisterForm({ data, open, handleClose }) {
           <Box>
 
             <Typography id="modal-modal-title" sx={{ marginBottom: 4, textAlign: "center" }} variant="h6" component="h2">
-              Registro de Empleados
+              {isNew ? 'Registro de Empleados' : 'Editar datos de Empleado'}
             </Typography>
-            <form onSubmit={handleSubmit}>
+            <form >
               <TextField
                 name="ci"
                 label="Cédula"
@@ -167,13 +189,13 @@ export default function ModalRegisterForm({ data, open, handleClose }) {
               />
               {errors.email && <p style={styleError}>{errors.email}</p>}
 
-              {loading ? <LoadingButton loading loadingPosition="start" startIcon={<SaveIcon />}variant="outlined"> Registrar </LoadingButton>:<Button sx={{ marginTop: 4 }} variant="contained" type='submit'>Registrar</Button>}
-
+              {isNew ? <Button sx={{ marginTop: 4 }} variant="contained" onClick={registerEmployee}>Registrar</Button>
+                : <Button sx={{ marginTop: 4 }} variant="contained" onClick={updateEmployee}>Guardar</Button>}
             </form>
           </Box>
         </Box>
       </Modal>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 }
