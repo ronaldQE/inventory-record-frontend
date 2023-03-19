@@ -2,6 +2,24 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Inicio de Sesión
+Credenciales Administrador
+### `Usuario: admin`
+### `Password: admin123`
+
+## Librerias y Dependencias
+En la interface del proyecto [Material UI](https://mui.com/material-ui/getting-started/overview/)
+
+Mensajes [react-toastify](https://www.npmjs.com/package/react-toastify)
+
+Las vaalidaciones del formulario con un Hook personalizado `useForm`
+
+Para la persistencia de datos `Firebase`.
+
+## Run in development mode
+install the dependencies
+### `npm i`
+
 ## Available Scripts
 
 In the project directory, you can run:
